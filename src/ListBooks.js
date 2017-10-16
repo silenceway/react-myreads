@@ -28,7 +28,7 @@ class ListBooks extends Component {
               <div className="bookshelf-books">
                 <ol className="books-grid">
                   {currentlyList.map((book) =>
-                    <Book book={book} />
+                    <Book onUpdateBook={onUpdateBook} book={book} />
                   )}
                 </ol>
               </div>
@@ -38,7 +38,7 @@ class ListBooks extends Component {
               <div className="bookshelf-books">
                 <ol className="books-grid">
                   {wantList.map((book) =>
-                    <Book book={book} />
+                    <Book book={book} onUpdateBook={onUpdateBook} />
                   )}
                 </ol>
               </div>
@@ -48,7 +48,7 @@ class ListBooks extends Component {
               <div className="bookshelf-books">
                 <ol className="books-grid">
                   {readList.map((book) =>
-                    <Book book={book} />
+                    <Book book={book} onUpdateBook={onUpdateBook} />
                   )}
                 </ol>
               </div>

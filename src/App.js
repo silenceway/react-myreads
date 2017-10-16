@@ -8,7 +8,8 @@ import * as BooksAPI from './BooksAPI';
 
 class App extends Component {
   state = {
-    books: []
+    books: [],
+    results: []
   };
 
   getAllBooks = () => {
@@ -17,9 +18,19 @@ class App extends Component {
     });
   };
 
-  updateBook = (book) => {
-    BooksAPI.update(book, "currentlyReading").then((booksStatus) => {
+  onUpdateBook = (data) => {
+    BooksAPI.update(data.book, data.value).then((booksStatuses) => {
       this.getAllBooks();
+    });
+  };
+
+  onSearchBook = (query) => {
+    BooksAPI.search(query, 20).then((results) => {
+      if (results && !results.items) {
+        this.setState({ results });
+      } else {
+        this.setState({ results: [] });
+      }
     });
   };
 
@@ -33,12 +44,19 @@ class App extends Component {
         <Route path="/" exact
           render={() => (
             <ListBooks
-              books={this.state.books}
-              onUpdateBook="" />
+              onUpdateBook={this.onUpdateBook}
+              books={this.state.books} />
           )} />
         <Route path="/search"
           render={({ history }) => (
-            <SearchBook />
+            <SearchBook
+              books={this.state.books}
+              results={this.state.results}
+              onSearchBook={this.onSearchBook}
+              onCreateBook={(data) => {
+                this.onUpdateBook(data);
+                history.push('/');
+              }} />
           )} />
       </div>
     )
