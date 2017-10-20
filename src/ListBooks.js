@@ -1,20 +1,15 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Book from './Book';
+import Shelf from './Shelf';
 
 class ListBooks extends Component {
-  state = {
-  }
-
   render () {
     const { books, onUpdateBook } = this.props;
-    let currentlyList,
-      wantList,
-      readList;
-
-    currentlyList = books.filter((book) => book.shelf.search("currentlyReading")  !== -1 );
-    wantList = books.filter((book) => book.shelf.search("wantToRead")  !== -1 );
-    readList = books.filter((book) => book.shelf.search("read")  !== -1 );
+    const shelfs = [
+      {'id': '1', 'value': 'currentlyReading', 'title': 'Currently Reading'},
+      {'id': '2', 'value': 'wantToRead', 'title': 'Want to Read'},
+      {'id': '3', 'value': 'read', 'title': 'Read'},
+    ];
 
     return (
       <div className="list-books">
@@ -23,36 +18,9 @@ class ListBooks extends Component {
         </div>
         <div className="list-books-content">
           <div>
-            <div className="bookshelf">
-              <h2 className="bookshelf-title">Currently Reading</h2>
-              <div className="bookshelf-books">
-                <ol className="books-grid">
-                  {currentlyList.map((book) =>
-                    <Book onUpdateBook={onUpdateBook} book={book} />
-                  )}
-                </ol>
-              </div>
-            </div>
-            <div className="bookshelf">
-              <h2 className="bookshelf-title">Want to Read</h2>
-              <div className="bookshelf-books">
-                <ol className="books-grid">
-                  {wantList.map((book) =>
-                    <Book book={book} onUpdateBook={onUpdateBook} />
-                  )}
-                </ol>
-              </div>
-            </div>
-            <div className="bookshelf">
-              <h2 className="bookshelf-title">Read</h2>
-              <div className="bookshelf-books">
-                <ol className="books-grid">
-                  {readList.map((book) =>
-                    <Book book={book} onUpdateBook={onUpdateBook} />
-                  )}
-                </ol>
-              </div>
-            </div>
+            {shelfs.map((shelf) =>
+              <Shelf books={books} shelf={shelf} onUpdateBook={onUpdateBook} key={shelf.id} />
+            )}
           </div>
         </div>
         <div className="open-search">

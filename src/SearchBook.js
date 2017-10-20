@@ -8,12 +8,14 @@ class SearchBook extends Component {
   }
 
   updateQuery = (query) => {
-    this.setState({
-      query: query.trim()
-    });
-    if (this.props.onSearchBook && this.state.query.length) {
-      this.props.onSearchBook(this.state.query);
-    }
+    this.setState(
+      { query: query },
+      () => {
+        if (this.props.onSearchBook && this.state.query.length) {
+          this.props.onSearchBook(this.state.query);
+        }
+      }
+    );
   };
 
   clearQuery = () => {
@@ -56,7 +58,7 @@ class SearchBook extends Component {
         <div className="search-books-results">
           <ol className="books-grid">
             {showingResults.map((book) =>
-              <Book book={book} onUpdateBook={onCreateBook} />
+              <Book book={book} key={book.id} onUpdateBook={onCreateBook} />
             )}
           </ol>
         </div>

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import logo from './logo.svg';
 import ListBooks from './ListBooks';
 import SearchBook from './SearchBook';
+import NoMatch from './NoMatch';
 import './App.css';
 import * as BooksAPI from './BooksAPI';
 
@@ -20,18 +21,25 @@ class App extends Component {
 
   onUpdateBook = (data) => {
     BooksAPI.update(data.book, data.value).then((booksStatuses) => {
-      this.getAllBooks();
+      data.book.shelf = data.value;
+      this.setState(previousState => ({
+        books: previousState.books.filter(b => b.id !== data.book.id).concat([data.book])
+      }))
     });
   };
 
   onSearchBook = (query) => {
-    BooksAPI.search(query, 20).then((results) => {
-      if (results && !results.items) {
-        this.setState({ results });
-      } else {
-        this.setState({ results: [] });
-      }
-    });
+    if (query !== "") {
+      BooksAPI.search(query, 20).then((results) => {
+        if (results && !results.items) {
+          this.setState({ results });
+        } else {
+          this.setState({ results: [] });
+        }
+      });
+    } else {
+      this.setState({ results: [] });
+    }
   };
 
   componentDidMount () {
@@ -41,23 +49,25 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        <Route path="/" exact
-          render={() => (
-            <ListBooks
-              onUpdateBook={this.onUpdateBook}
-              books={this.state.books} />
-          )} />
-        <Route path="/search"
-          render={({ history }) => (
-            <SearchBook
-              books={this.state.books}
-              results={this.state.results}
-              onSearchBook={this.onSearchBook}
-              onCreateBook={(data) => {
-                this.onUpdateBook(data);
-                history.push('/');
-              }} />
-          )} />
+        <Switch>
+          <Route path="/" exact
+            render={() => (
+              <ListBooks
+                onUpdateBook={this.onUpdateBook}
+                books={this.state.books} />
+            )} />
+          <Route path="/search"
+            render={({ history }) => (
+              <SearchBook
+                books={this.state.books}
+                results={this.state.results}
+                onSearchBook={this.onSearchBook}
+                onCreateBook={(data) => {
+                  this.onUpdateBook(data);
+                }} />
+            )} />
+          <Route component={NoMatch}/>
+        </Switch>
       </div>
     )
   }
